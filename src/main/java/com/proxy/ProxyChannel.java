@@ -31,18 +31,6 @@ public class ProxyChannel extends Thread {
 			e.printStackTrace();
 		} finally {
 			try {
-				// close
-				if (!fromSocket.isOutputShutdown()) {
-					fromSocket.shutdownOutput();
-				}
-
-				if (!fromSocket.isInputShutdown()) {
-					fromSocket.shutdownInput();
-				}
-
-				if (!toSocket.isInputShutdown()) {
-					toSocket.shutdownInput();
-				}
 				if (!toSocket.isOutputShutdown()) {
 					toSocket.shutdownOutput();
 				}

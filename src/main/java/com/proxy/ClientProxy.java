@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 public class ClientProxy extends Thread {
 	private static final Logger logger = Logger.getLogger(ClientProxy.class.getName());
 	private Socket clientSocket;
+	private Socket remoteSocket;
 
 	public ClientProxy(Socket clientSocket) {
 		this.clientSocket = clientSocket;
@@ -22,32 +23,53 @@ public class ClientProxy extends Thread {
 			if (request.isHttps()) {
 				logger.info("https request");
 			}
-			
-			//logger.info(new String(request.getHeaders()));
-			
+
+			// logger.info(new String(request.getHeaders()));
+
 			if (StringUtils.isBlank(request.getHost())) {
 				this.closeSocket(clientSocket);
 				return;
 			}
 
-			Socket remoteSocket = connect(request.getHost(), request.getPort());
-			if(remoteSocket == null){
+			logger.info("target host:" + request.getHost());
+
+			remoteSocket = connect(request.getHost(), request.getPort());
+			if (remoteSocket == null) {
 				this.closeSocket(clientSocket);
 				return;
 			}
-			
-			//header
-			if(request.isHttps()){
+
+			// header
+			if (request.isHttps()) {
+				// 如果是https需要回应一个established响应给游览器
 				clientSocket.getOutputStream().write(new HttpsConnectResponse().getResponse());
-			}else{
+			} else {
 				remoteSocket.getOutputStream().write(request.getHeaders());
 			}
-			
-			new ProxyChannel(clientSocket, remoteSocket).start();
-			new ProxyChannel(remoteSocket, clientSocket).start();
-			
+
+			ProxyChannel requestProxyChannel = new ProxyChannel(clientSocket, remoteSocket);
+			requestProxyChannel.start();
+			ProxyChannel responseProxyChannel = new ProxyChannel(remoteSocket, clientSocket);
+			responseProxyChannel.start();
+
+			responseProxyChannel.join();
+			requestProxyChannel.join();
 		} catch (IOException e) {
 			e.printStackTrace();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} finally {
+
+			try {
+				if (clientSocket != null) {
+					clientSocket.close();
+				}
+				if(remoteSocket != null){
+					remoteSocket.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
