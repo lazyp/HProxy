@@ -3,12 +3,12 @@ package com.proxy;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.logging.Logger;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 
 public class ClientProxy extends Thread {
-	private static final Logger logger = Logger.getLogger(ClientProxy.class.getName());
+	private static final Logger logger = Logger.getLogger(ClientProxy.class);
 	private Socket clientSocket;
 	private Socket remoteSocket;
 
@@ -27,7 +27,8 @@ public class ClientProxy extends Thread {
 			// logger.info(new String(request.getHeaders()));
 
 			if (StringUtils.isBlank(request.getHost())) {
-				this.closeSocket(clientSocket);
+				logger.error("\n\n无法解析出HOST字段 ???\n");
+				logger.error(new String(request.getHeaders()));
 				return;
 			}
 
@@ -35,7 +36,6 @@ public class ClientProxy extends Thread {
 
 			remoteSocket = connect(request.getHost(), request.getPort());
 			if (remoteSocket == null) {
-				this.closeSocket(clientSocket);
 				return;
 			}
 
@@ -77,9 +77,9 @@ public class ClientProxy extends Thread {
 		try {
 			return new Socket(host, port);
 		} catch (UnknownHostException e) {
-			logger.warning("unknown host");
+			logger.error("unknown host");
 		} catch (IOException e) {
-			logger.warning(e.getMessage());
+			logger.error(e.getMessage());
 		}
 		return null;
 	}
