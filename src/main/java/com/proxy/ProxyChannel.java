@@ -5,6 +5,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+/**
+ * 连接代理通道
+ * @author <a href=mailto:lazy_p@163.com>lazyp</a>
+ *
+ */
 public class ProxyChannel extends Thread {
 	private Socket fromSocket;
 	private Socket toSocket;
