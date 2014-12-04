@@ -22,8 +22,6 @@ public final class HProxy {
 	}
 
 	public static void main(String[] args) {
-		// System.setProperty("java.util.logging.config.file",
-		// "logging.properties");
 		HProxy hProxy = new HProxy();
 		try {
 			hProxy.start();

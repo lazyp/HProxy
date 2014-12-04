@@ -59,17 +59,8 @@ public class ClientProxy extends Thread {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		} finally {
-
-			try {
-				if (clientSocket != null) {
-					clientSocket.close();
-				}
-				if(remoteSocket != null){
-					remoteSocket.close();
-				}
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			this.closeSocket(clientSocket);
+			this.closeSocket(remoteSocket);
 		}
 	}
 
