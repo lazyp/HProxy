@@ -55,9 +55,9 @@ public class ClientProxy extends Thread {
 			responseProxyChannel.join();
 			requestProxyChannel.join();
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("" , e);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage());
 		} finally {
 			this.closeSocket(clientSocket);
 			this.closeSocket(remoteSocket);
@@ -80,7 +80,7 @@ public class ClientProxy extends Thread {
 			try {
 				socket.close();
 			} catch (IOException e) {
-				e.printStackTrace();
+				logger.error("close the socket exception.");
 			}
 		}
 	}

@@ -12,7 +12,7 @@ public final class HProxy {
 	private int localProxyPort = 30000;
 
 	public void start() throws IOException {
-		logger.info("@_@ 启动代理 @_@");
+		logger.info("@_@ start the hproxy @_@");
 		localProxyServerSocket = new ServerSocket(localProxyPort);
 		while (true) {
 			Socket clientSocket = localProxyServerSocket.accept();
